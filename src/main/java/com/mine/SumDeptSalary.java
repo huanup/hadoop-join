@@ -20,8 +20,9 @@ import java.util.Map;
 
 /**
  * Created by zhanghuan on 2018/12/10.
+ * 求部门工资总和
  */
-public class MapperJoin {
+public class SumDeptSalary {
 
     static class MyMap extends Mapper<LongWritable, Text, Text, Text> {
 
@@ -73,8 +74,8 @@ public class MapperJoin {
             System.exit(2);
         }
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "mapper join");
-        job.setJarByClass(MapperJoin.class);
+        Job job = Job.getInstance(conf, "sum dept salary");
+        job.setJarByClass(SumDeptSalary.class);
         job.setMapperClass(MyMap.class);
         job.setReducerClass(MyReduce.class);
         job.setOutputKeyClass(Text.class);
