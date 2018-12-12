@@ -48,7 +48,7 @@ public class AvgDeptSalary {
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String[] item = value.toString().split(",");
             if(cache.containsKey(item[7])){
-                context.write(new Text(item[7]), new Text(item[5]));
+                context.write(new Text(cache.get(item[7])), new Text(item[5]));
             }
         }
     }
@@ -62,7 +62,7 @@ public class AvgDeptSalary {
                 sum += Long.parseLong(value.toString());
                 count ++;
             }
-            context.write(key, new Text("dept memberNum:" + count + " avg salary :" + (count != 0? sum / count : 0 )));
+            context.write(key, new Text("dept memberNum :" + count + " avg salary :" + (count != 0? sum / count : 0 )));
         }
     }
 
