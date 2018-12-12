@@ -25,7 +25,7 @@ import java.util.Map;
 public class SumDeptSalary {
 
     static class MyMap extends Mapper<LongWritable, Text, Text, Text> {
-
+        //在map进程中缓存部门信息
         Map<String, String> cache = new HashMap<>();
 
         @Override
@@ -46,9 +46,10 @@ public class SumDeptSalary {
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            //map join
+            //取得缓存部门信息 实现map join 无需要shuffle
             String[] item = value.toString().split(",");
             if(cache.containsKey(item[7])){
+                //同一个部门的人员 划分到同一个reducer
                 context.write(new Text(cache.get(item[7])), new Text(item[5]));
             }
         }
@@ -83,6 +84,7 @@ public class SumDeptSalary {
         for (int i = 1, len = args.length - 1; i < len; i++) {
             FileInputFormat.addInputPath(job, new Path(Common.getPath(args[i])));
         }
+        //缓存部门信息
         job.addCacheFile(new Path(Common.getPath(args[0])).toUri());
         Common.delete(args[args.length - 1], conf);
         FileOutputFormat.setOutputPath(job, new Path(Common.getPath(args[args.length - 1])));
