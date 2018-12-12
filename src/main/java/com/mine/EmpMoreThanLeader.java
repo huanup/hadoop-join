@@ -5,13 +5,16 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +27,9 @@ public class EmpMoreThanLeader {
     static class MoreMap extends Mapper<LongWritable, Text, Text, Text> {
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            //打印map阶段读取的文件名
+            FileSplit split = (FileSplit)context.getInputSplit();
+            System.err.println(split.getPath().getName());
             String[] item = value.toString().split(",");
             //上司表
             context.write(new Text(item[0]), new Text("M:" + item[5]));
